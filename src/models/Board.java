@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
@@ -8,6 +9,15 @@ public class Board {
 
     public Board(int size) {
         this.size = size;
+        board = new ArrayList<>();    // [] :- Outer Arraylist
+
+        for (int i = 0; i < size; ++i) {
+            board.add(new ArrayList<>());    // [[], [], []] :- Inner Arraylist
+
+            for (int j = 0; j < size; ++j) {
+                board.get(i).add(new Cell(i, j));   // [[0 0 0], [0 0 0], [0 0 0]]
+            }
+        }
     }
 
     public int getSize() {

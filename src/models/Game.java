@@ -166,4 +166,66 @@ public class Game {
     public void setWinningStrategies(List<WinningStrategy> winningStrategies) {
         this.winningStrategies = winningStrategies;
     }
+
+    public void makeMove() {
+        Player currentMovePlayer = players.get(nextMovePlayerIndex);
+
+        System.out.println("It is " + currentMovePlayer.getName() + " turn. Please make your move");
+
+        Move move = currentMovePlayer.makeMove(board);
+
+        if (!validateMove(move)) {
+            System.out.println("Invalid move. Please try again");
+            return;
+        }
+
+        // Update the board
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        Cell cellToUpdate = board.getBoard().get(row).get(col);
+        cellToUpdate.setCellState(CellState.FILLED);
+        cellToUpdate.setPlayer(currentMovePlayer);
+
+        Move finalMove = new Move(cellToUpdate, currentMovePlayer);
+        moves.add(finalMove);
+
+        nextMovePlayerIndex += 1;
+        nextMovePlayerIndex %= players.size();
+
+        if (checkWinner(move)) {
+            gameState = GameState.WIN;
+            winner = currentMovePlayer;
+        } else if (moves.size() == board.getSize() * board.getSize()) {
+            gameState = GameState.DRAW;
+        }
+    }
+
+    public boolean checkWinner(Move move) {
+        for (WinningStrategy winningStrategy : winningStrategies) {
+            if (winningStrategy.checkWinner(board, move)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean validateMove(Move move) {
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        if (row >= board.getSize()) {
+            return false;
+        }
+
+        if (col >= board.getSize()) {    // Board Size:- N * N
+            return false;
+        }
+
+        if (board.getBoard().get(row).get(col).getCellState().equals(CellState.EMPTY)) {
+            return true;
+        }
+
+        return false;
+    }
 }
