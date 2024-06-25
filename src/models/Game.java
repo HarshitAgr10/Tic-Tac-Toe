@@ -228,4 +228,8 @@ public class Game {
 
         return false;
     }
+
+    public void printBoard() {
+        board.printBoard();
+    }
 }
