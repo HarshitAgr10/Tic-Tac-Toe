@@ -27,7 +27,7 @@ public class Game {
         this.gameState = GameState.IN_PROGRESS;
     }
 
-    static class Builder {
+    public static class Builder {
         private List<Player> players;
         private int size;
         private List<WinningStrategy> winningStrategies;
@@ -231,5 +231,22 @@ public class Game {
 
     public void printBoard() {
         board.printBoard();
+    }
+
+    public void undo() {
+        if (moves.isEmpty()) {
+            System.out.println("Board is empty, Cannot undo");
+            return;
+        }
+
+        Move lastMove = moves.get(moves.size() - 1);
+        moves.remove(lastMove);
+
+        Cell cell = lastMove.getCell();
+        cell.setCellState(CellState.EMPTY);
+        cell.setPlayer(null);
+
+        nextMovePlayerIndex -= 1;
+        nextMovePlayerIndex = (nextMovePlayerIndex + players.size()) % players.size();
     }
 }
